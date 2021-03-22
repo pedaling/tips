@@ -21,15 +21,14 @@ CORS(app)
 def home():
     return '<h1>API is working... </h1>'
 
-@app.route('/api/', methods=['POST'])
-def makecalc():
+@app.route('/predict/', methods=['POST'])
+def predict():
     data = request.get_json()
     prediction = np.array2string(model.predict(data))
 
     return jsonify(prediction)
 
 if __name__ == '__main__':
-    
     app.run(debug=True, host='0.0.0.0')
     
     
