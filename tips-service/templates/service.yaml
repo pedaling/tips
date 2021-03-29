@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "class101-server.fullname" . }}
+  labels:
+    {{- include "class101-server.labels" . | nindent 4 }}
+  annotations:
+  {{- with .Values.service.annotations }}
+    {{ toYaml . | indent 4}}
+  {{- end }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: {{ .Values.service.containerPort }}
+      protocol: TCP
+  selector:
+    {{- include "class101-server.selectorLabels" . | nindent 4 }}

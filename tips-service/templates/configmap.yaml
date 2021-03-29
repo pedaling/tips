@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "class101-server.fullname" . }}
+  labels:
+    {{- include "class101-server.labels" . | nindent 4 }}
+    {{- include "class101-server.apm.labels" . | nindent 4 }}
+

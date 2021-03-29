@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "class101-server.fullname" . }}
+  labels:
+    {{- include "class101-server.labels" . | nindent 4 }}
+    {{- include "class101-server.apm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.container.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      {{- include "class101-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "class101-server.selectorLabels" . | nindent 8 }}
+        {{- include "class101-server.apm.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "class101-server.serviceAccountName" . }}
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+          - 169.254.20.10
+      containers:
+        - name: {{ .Chart.Name }}
+          env:
+            - name: INFRA_ENV
+              value: {{ .Values.container.activeProfile }}
+            - name: RUNNING_ENV
+              value: {{ .Values.container.activeProfile }}
+            - name: ENVIRONMENT_ENV
+              value: {{ .Values.container.activeProfile }}
+            - name: NODE_ENV
+              value: {{ .Values.container.activeProfile }}
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: DD_LOGS_INJECTION
+              value: "true"
+            - name: DD_APM_IGNORE_RESOURCES
+              value: "GET /service-health-check"
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/{{.Release.Name}}.env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/{{.Release.Name}}.service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/{{.Release.Name}}.version']
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.versionTag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.containerPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.container.healthCheck }}
+              port: http
+            initialDelaySeconds: {{ .Values.container.initialDelaySecond }}
+            periodSeconds: 5
+            failureThreshold: 2
+            successThreshold: 1
+            timeoutSeconds: 60
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.container.healthCheck }}
+              port: http
+            initialDelaySeconds: {{ .Values.container.initialDelaySecond }}
+            successThreshold: 3
+            failureThreshold: 2
+            periodSeconds: 5
+            timeoutSeconds: 30
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      nodeSelector:
+        class101.net/service-type: stable
+
