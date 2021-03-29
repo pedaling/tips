@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "class101-server.fullname" . }}
+  labels:
+    {{- include "class101-server.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    {{- with .Values.ingress.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+
+spec:
+  tls:
+    - hosts:
+      - {{ .Values.ingress.domain }}
+  rules:
+    - host: {{ .Values.ingress.domain }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ include "class101-server.fullname" . }}
+              servicePort: 80
