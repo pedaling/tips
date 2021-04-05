@@ -28,6 +28,7 @@ service:
 
 ingress:
   annotations: {}
+  domain: tips.class101.net
 
 resources:
   requests:

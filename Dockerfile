@@ -1,4 +1,4 @@
-FROM python:3.7.5 AS build-env
+FROM python:3.7.5
 
 WORKDIR /app
 COPY requirements.txt /app/requirements.txt
