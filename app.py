@@ -15,6 +15,7 @@ def create_app():
 
     # load model
     model = load_model('final_model.h5')
+    model.call = tf.function(model.call)
 
     CORS(app)
 
@@ -23,10 +24,10 @@ def create_app():
     def home():
         return '<h1>API is working... </h1>'
 
-    @app.route('/predict', methods=['GET'])
+    @app.route('/predict', methods=['POST'])
     def predict():
-        data = request.get_json()
-        prediction = np.array2string(model.predict(data))
+        data = np.array([request.get_json()])
+        prediction = np.array2string(model.predict_classes(data)).tolist()
 
         return jsonify(prediction)
 
