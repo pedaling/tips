@@ -1,0 +1,47 @@
+namespace: data
+
+nameOverride: ""
+fullnameOverride: ""
+environment: ""
+
+container:
+  healthCheck: /
+  initialDelaySecond: 20
+  activeProfile: "production"
+  replicas: 2
+
+image:
+  repository: 212011163676.dkr.ecr.ap-northeast-2.amazonaws.com
+  name: class101-tips
+  versionTag: 1.0.0
+  pullPolicy: Always
+  # IfNotPresent | Always
+
+serviceAccount:
+  create: false
+  annotations:
+  name:
+
+service:
+  containerPort: 5000
+  annotations: {}
+
+ingress:
+  annotations: {}
+
+resources:
+  requests:
+    cpu: 1
+    memory: 1024Mi
+
+nodeSelector: {}
+affinity: {}
+
+env:
+  LRU_ENABLE: "true"
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 16
+  targetCPUUtilizationPercentage: 50
