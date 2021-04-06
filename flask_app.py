@@ -27,7 +27,9 @@ def create_app():
     def predict():
         data = np.array([request.get_json()])
         prediction = model.predict_classes(data).tolist()
-
+        print('\n')
+        print('!!!!!!!!!!!!!!!data input success!!!!!!!!!!!!!!!')
+        print('\n')
         return jsonify(prediction)
 
     if __name__ == '__main__':
