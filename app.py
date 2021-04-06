@@ -8,31 +8,26 @@ from tensorflow.keras.models import load_model
 # Flask
 import flask
 from flask import *
-from flask_cors import CORS
 
-def create_app():
-    app = flask.Flask(__name__)
-    app.config["DEBUG"] = True
+app = flask.Flask(__name__)
+app.config["DEBUG"] = True
 
-    # load model
-    model = load_model('final_model.h5')
-    model.call = tf.function(model.call)
+# load model
+model = load_model('oversampling_easy.h5')
+model.call = tf.function(model.call)
 
-    CORS(app)
+# main index page route
+@app.route('/')
+def home():
+    return '<h1>API is working...!!! </h1>'
 
-    # main index page route
-    @app.route('/')
-    def home():
-        return '<h1>API is working... </h1>'
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = np.array([request.get_json()])
+    prediction = model.predict(data).tolist()
 
-    @app.route('/predict', methods=['POST'])
-    def predict():
-        data = np.array([request.get_json()])
-        prediction = model.predict_classes(data).tolist()
+    return jsonify(prediction)
 
-        return jsonify(prediction)
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port='5000')
 
-    if __name__ == '__main__':
-        app.run(debug=True, host='0.0.0.0')
-
-    return app
