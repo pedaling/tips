@@ -26,7 +26,7 @@ def create_app():
     @app.route('/predict', methods=['POST'])
     def predict():
         data = np.array([request.get_json()])
-        prediction = model.predict(data).tolist()
+        prediction = model.predict_classes(data).tolist()
 
         return jsonify(prediction)
 
