@@ -13,7 +13,7 @@ container:
 image:
   repository: 212011163676.dkr.ecr.ap-northeast-2.amazonaws.com
   name: class101-tips
-  versionTag: 1.0.8
+  versionTag: 1.1.0
   pullPolicy: Always
   # IfNotPresent | Always
 
