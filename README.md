@@ -13,7 +13,7 @@ python app.py
 tips-service/values.yaml에 업데이트한 도커 이미지 태그 수정 후 Push 하기
 
 ```bash
-docker build . -t 212011163676.dkr.ecr.ap-northeast-2.amazonaws.com/class101-tips:{versionTag}
-docker run -it 212011163676.dkr.ecr.ap-northeast-2.amazonaws.com/class101-tips:{versionTag}
-docker push 212011163676.dkr.ecr.ap-northeast-2.amazonaws.com/class101-tips:1.0.2
+docker build . -t 212011163676.dkr.ecr.ap-northeast-2.amazonaws.com/class101-tips:1.0.1
+docker push 212011163676.dkr.ecr.ap-northeast-2.amazonaws.com/class101-tips:1.0.1
+docker run -it 212011163676.dkr.ecr.ap-northeast-2.amazonaws.com/class101-tips:1.0.1
 ```
