@@ -5,7 +5,7 @@
 ### Test & Development
 
 ```bash
-python app.py
+python wsgi.py
 ```
 
 ### Docker
