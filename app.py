@@ -16,7 +16,7 @@ def create_app():
 
     # load model
     model = load_model('tips_model_1.h5')
-    model.call = tf.function(model.call)
+    
 
     # main index page route
     @app.route('/')
@@ -26,11 +26,12 @@ def create_app():
     @app.route('/predict', methods=['POST'])
     def predict():
         data = np.array([request.get_json()])
-        prediction = model.predict_classes(data).tolist()
-        print('\n')
-        print('!!!!!!!!!!!!!!!data input success!!!!!!!!!!!!!!!')
-        print('\n')
-        return jsonify(prediction)
+        if 0 in data:
+            result = 0
+            return jsonify(result)
+        else:        
+            prediction = model.predict_classes(data).tolist()
+            return jsonify(prediction)
 
     if __name__ == '__main__':
         app.run(debug=False, host='0.0.0.0', port='5000')
