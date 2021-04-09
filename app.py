@@ -2,7 +2,6 @@
 
 # Deep Learning
 import numpy as np
-import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 # Flask
@@ -17,7 +16,6 @@ def create_app():
     # load model
     model = load_model('tips_model_1.h5')
     
-
     # main index page route
     @app.route('/')
     def home():
